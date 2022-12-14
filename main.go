@@ -59,7 +59,7 @@ func main() {
 	)
 
 	// Register Filter Service
-	filterServiceServer, err := server.NewFilterServiceServer()
+	filterServiceServer, err := server.NewFilterServiceServerWithCustomDictionary("data/profanities.json")
 	if err != nil {
 		logrus.Fatalf("unable to create filter service server: %v", err)
 		return

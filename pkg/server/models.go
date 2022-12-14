@@ -59,3 +59,10 @@ func (c *JWTClaims) Validate() error {
 		Time: time.Now().UTC(),
 	})
 }
+
+// ProfanityCustomDictionary holds information about go-away custom profanities
+type ProfanityCustomDictionary struct {
+	Profanities    []string `json:"profanities"`
+	FalsePositives []string `json:"falsePositives"`
+	FalseNegatives []string `json:"falseNegatives"`
+}

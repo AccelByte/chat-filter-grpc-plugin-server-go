@@ -1,0 +1,14 @@
+{
+  "profanities": [
+    "awful",
+    "bad"
+  ],
+  "falsePositives": [
+    "iawful",
+    "ibad"
+  ],
+  "falseNegatives": [
+    "yourawful",
+    "yourbad"
+  ]
+}

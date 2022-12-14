@@ -6,6 +6,8 @@ package server
 
 import (
 	"context"
+	"encoding/json"
+	"os"
 	"time"
 
 	"chat-filter-grpc-plugin-server-go/pkg/pb"
@@ -59,6 +61,28 @@ func NewFilterServiceServer() (*FilterServiceServer, error) {
 			[]string{"bad"},
 			[]string{"ibad"},
 			[]string{"yourbad"},
+		),
+	}, nil
+}
+
+func NewFilterServiceServerWithCustomDictionary(filepath string) (*FilterServiceServer, error) {
+	file, err := os.ReadFile(filepath)
+	if err != nil {
+		return nil, err
+	}
+
+	var profanityCustomDictionary ProfanityCustomDictionary
+
+	err = json.Unmarshal(file, &profanityCustomDictionary)
+	if err != nil {
+		return nil, err
+	}
+
+	return &FilterServiceServer{
+		detector: goaway.NewProfanityDetector().WithCustomDictionary(
+			profanityCustomDictionary.Profanities,
+			profanityCustomDictionary.FalsePositives,
+			profanityCustomDictionary.FalseNegatives,
 		),
 	}, nil
 }
