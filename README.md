@@ -14,7 +14,7 @@
 
     d. docker loki driver
         
-        docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
+       docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
 
     e. make
 
@@ -35,11 +35,14 @@ Create a docker compose `.env` file based on `.env.template` file and fill in th
 ```
 AB_BASE_URL=https://demo.accelbyte.io      # Base URL
 AB_SECURITY_CLIENT_ID=xxxxxxxxxx           # Client ID
-AB_SECURITY_CLIENT_SECRET=xxxxxxxxxx       # Client Secret
+AB_SECURITY_CLIENT_SECRET=xxxxxxxxxx       # Client secret
 AB_NAMESPACE=xxxxxxxxxx                    # Namespace ID
+PLUGIN_GRPC_SERVER_AUTH_ENABLED=false      # Enable/disable authorization
 ```
 
-> :exclamation: **For the server and client**: Use the same Base URL, Client ID, Client Secret, and Namespace ID.
+> :exclamation: **For the server and client**: 
+> 1. Use the same Base URL, Client ID, Client Secret, and Namespace ID.
+> 2. Use the same authorization configuration, whether it is enabled or disabled.
 
 ## Building
 
