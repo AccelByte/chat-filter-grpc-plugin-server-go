@@ -4,7 +4,10 @@
 
 package server
 
-import "os"
+import (
+	"os"
+	"strconv"
+)
 
 func GetEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
@@ -12,4 +15,14 @@ func GetEnv(key, fallback string) string {
 	}
 
 	return fallback
+}
+
+func GetEnvInt(key string, fallback int) int {
+	str := GetEnv(key, strconv.Itoa(fallback))
+	val, err := strconv.Atoi(str)
+	if err != nil {
+		return fallback
+	}
+
+	return val
 }

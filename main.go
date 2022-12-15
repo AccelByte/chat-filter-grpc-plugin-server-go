@@ -12,7 +12,11 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
+	"time"
 
+	"github.com/AccelByte/accelbyte-go-sdk/services-api/pkg/factory"
+	"github.com/AccelByte/accelbyte-go-sdk/services-api/pkg/service/iam"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sirupsen/logrus"
@@ -26,6 +30,7 @@ import (
 	"chat-filter-grpc-plugin-server-go/pkg/pb"
 	"chat-filter-grpc-plugin-server-go/pkg/server"
 
+	sdkAuth "github.com/AccelByte/accelbyte-go-sdk/services-api/pkg/utils/auth"
 	prometheusGrpc "github.com/grpc-ecosystem/go-grpc-prometheus"
 	prometheusCollectors "github.com/prometheus/client_golang/prometheus/collectors"
 )
@@ -45,17 +50,38 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	unaryServerInterceptors := []grpc.UnaryServerInterceptor{
+		otelgrpc.UnaryServerInterceptor(),
+		prometheusGrpc.UnaryServerInterceptor,
+	}
+	streamServerInterceptors := []grpc.StreamServerInterceptor{
+		otelgrpc.StreamServerInterceptor(),
+		prometheusGrpc.StreamServerInterceptor,
+	}
+
+	if strings.ToLower(server.GetEnv("ENABLE_INTERCEPTOR_AUTH", "false")) == "true" {
+		// unaryServerInterceptors = append(unaryServerInterceptors, server.EnsureValidToken) // deprecated
+
+		refreshInterval := server.GetEnvInt("REFRESH_INTERVAL", 600)
+		configRepo := sdkAuth.DefaultConfigRepositoryImpl()
+		tokenRepo := sdkAuth.DefaultTokenRepositoryImpl()
+		authService := iam.OAuth20Service{
+			Client:           factory.NewIamClient(configRepo),
+			ConfigRepository: configRepo,
+			TokenRepository:  tokenRepo,
+		}
+		server.Validator = server.NewTokenValidator(authService, time.Duration(refreshInterval)*time.Second)
+		server.Validator.Initialize()
+
+		unaryServerInterceptors = append(unaryServerInterceptors, server.UnaryAuthServerIntercept)
+		streamServerInterceptors = append(streamServerInterceptors, server.StreamAuthServerIntercept)
+		logrus.Infof("added auth interceptors")
+	}
+
 	// Create gRPC Server
 	s := grpc.NewServer(
-		grpc.ChainUnaryInterceptor(
-			otelgrpc.UnaryServerInterceptor(),
-			prometheusGrpc.UnaryServerInterceptor,
-			server.EnsureValidToken,
-		),
-		grpc.ChainStreamInterceptor(
-			otelgrpc.StreamServerInterceptor(),
-			prometheusGrpc.StreamServerInterceptor,
-		),
+		grpc.ChainUnaryInterceptor(unaryServerInterceptors...),
+		grpc.ChainStreamInterceptor(streamServerInterceptors...),
 	)
 
 	// Register Filter Service
