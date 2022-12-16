@@ -26,7 +26,7 @@
 
     b. [Create a Game Namespace](https://docs.accelbyte.io/esg/uam/namespaces.html#tutorials) if you don't have one yet. Keep the `Namespace ID`.
 
-    c. [Create an OAuth Client](https://docs.accelbyte.io/guides/access/iam-client.html) with confidential client type and give it `read` permission to resource `NAMESPACE:{namespace}:CHATGRPCSERVICE`. Keep the `Client ID` and `Client Secret`.
+    c. [Create an OAuth Client](https://docs.accelbyte.io/guides/access/iam-client.html) with confidential client type. If you want to enable permission authorization, give it `read` permission to resource `NAMESPACE:{namespace}:CHATGRPCSERVICE`. Keep the `Client ID` and `Client Secret`.
 
 ## Setup
 
@@ -37,12 +37,12 @@ AB_BASE_URL=https://demo.accelbyte.io      # Base URL
 AB_SECURITY_CLIENT_ID=xxxxxxxxxx           # Client ID
 AB_SECURITY_CLIENT_SECRET=xxxxxxxxxx       # Client secret
 AB_NAMESPACE=xxxxxxxxxx                    # Namespace ID
-PLUGIN_GRPC_SERVER_AUTH_ENABLED=false      # Enable/disable authorization
+PLUGIN_GRPC_SERVER_AUTH_ENABLED=false      # Enable/disable permission authorization
 ```
 
 > :exclamation: **For the server and client**: 
 > 1. Use the same Base URL, Client ID, Client Secret, and Namespace ID.
-> 2. Use the same authorization configuration, whether it is enabled or disabled.
+> 2. Use the same permission authorization configuration, whether it is enabled or disabled.
 
 ## Building
 
