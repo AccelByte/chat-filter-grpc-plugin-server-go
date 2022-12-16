@@ -14,7 +14,7 @@
 
     d. docker loki driver
         
-        docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
+       docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
 
     e. make
 
@@ -26,7 +26,7 @@
 
     b. [Create a Game Namespace](https://docs.accelbyte.io/esg/uam/namespaces.html#tutorials) if you don't have one yet. Keep the `Namespace ID`.
 
-    c. [Create an OAuth Client](https://docs.accelbyte.io/guides/access/iam-client.html) with confidential client type and give it `read` permission to resource `NAMESPACE:{namespace}:CHATGRPCSERVICE`. Keep the `Client ID` and `Client Secret`.
+    c. [Create an OAuth Client](https://docs.accelbyte.io/guides/access/iam-client.html) with confidential client type. If you want to enable permission authorization, give it `read` permission to resource `NAMESPACE:{namespace}:CHATGRPCSERVICE`. Keep the `Client ID` and `Client Secret`.
 
 ## Setup
 
@@ -35,11 +35,14 @@ Create a docker compose `.env` file based on `.env.template` file and fill in th
 ```
 AB_BASE_URL=https://demo.accelbyte.io      # Base URL
 AB_SECURITY_CLIENT_ID=xxxxxxxxxx           # Client ID
-AB_SECURITY_CLIENT_SECRET=xxxxxxxxxx       # Client Secret
+AB_SECURITY_CLIENT_SECRET=xxxxxxxxxx       # Client secret
 AB_NAMESPACE=xxxxxxxxxx                    # Namespace ID
+PLUGIN_GRPC_SERVER_AUTH_ENABLED=false      # Enable/disable permission authorization
 ```
 
-> :exclamation: **For the server and client**: Use the same Base URL, Client ID, Client Secret, and Namespace ID.
+> :exclamation: **For the server and client**: 
+> 1. Use the same Base URL, Client ID, Client Secret, and Namespace ID.
+> 2. Use the same permission authorization configuration, whether it is enabled or disabled.
 
 ## Building
 

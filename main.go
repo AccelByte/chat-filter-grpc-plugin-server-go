@@ -59,7 +59,7 @@ func main() {
 		prometheusGrpc.StreamServerInterceptor,
 	}
 
-	if strings.ToLower(server.GetEnv("ENABLE_INTERCEPTOR_AUTH", "false")) == "true" {
+	if strings.ToLower(server.GetEnv("PLUGIN_GRPC_SERVER_AUTH_ENABLED", "false")) == "true" {
 		// unaryServerInterceptors = append(unaryServerInterceptors, server.EnsureValidToken) // deprecated
 
 		refreshInterval := server.GetEnvInt("REFRESH_INTERVAL", 600)
