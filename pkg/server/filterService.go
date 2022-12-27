@@ -10,7 +10,7 @@ import (
 	"os"
 	"time"
 
-	"chat-filter-grpc-plugin-server-go/pkg/pb"
+	pb "chat-filter-grpc-plugin-server-go/pkg/pb"
 
 	goaway "github.com/TwiN/go-away"
 )

@@ -27,7 +27,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"chat-filter-grpc-plugin-server-go/pkg/pb"
+	pb "chat-filter-grpc-plugin-server-go/pkg/pb"
 	"chat-filter-grpc-plugin-server-go/pkg/server"
 
 	sdkAuth "github.com/AccelByte/accelbyte-go-sdk/services-api/pkg/utils/auth"
