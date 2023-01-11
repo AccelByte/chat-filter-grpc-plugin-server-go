@@ -75,6 +75,58 @@ To build, create a docker image, and run the application in one go, use the foll
 ```
 docker-compose up --build
 ```
+
+## Testing
+
+### Test Functionality in Local Development Environment
+
+The functionality of `gRPC server` methods can be tested in local development environment.
+
+1. Make sure `dependency services` are running. Please read `README.md` in the `grpc-plugin-dependencies` repository on how to run it.
+
+2. Make sure this sample `gRPC server` is also up and running.
+
+3. Run the corresponding `gRPC client` as a stand in for the actual `gRPC client` in AccelByte Cloud, for example `chat-filter-grpc-plugin-client-go`.
+
+   a. Clone `chat-filter-grpc-plugin-client-go` repository. 
+
+   b. Follow the `README.md` inside to setup, build, and run it.
+
+   c. Try it out! See the instruction in `README.md`.
+
+> :exclamation: **Sample `gRPC server` and `gRPC client` does not have to be implemented in the same programming language**: As long as the gRPC proto is compatible, they should be able to communicate with each other.
+
+### Test Integration with AccelByte Cloud
+
+After testing functionality in local development environment, to allow the actual `gRPC client` in AccelByte Cloud demo environment to access `gRPC server` in local development environment without requiring a public IP address, we can use [ngrok](https://ngrok.com/).
+
+1. Make sure `dependency services` and this sample `gRPC server` are up and running.
+
+2. Sign-in/sign-up to [ngrok](https://ngrok.com/) and get your auth token in `ngrok` dashboard.
+
+3. In `grpc-plugin-dependencies` repository, run the following command to expose `gRPC server` Envoy proxy port in local development environment to the internet. Take a note of the `ngrok` forwarding URL e.g. `tcp://0.tcp.ap.ngrok.io:xxxxx`.
+
+   ```
+   make ngrok NGROK_AUTHTOKEN=xxxxxxxxxxx
+   ```
+
+4. [Create an OAuth Client](https://docs.accelbyte.io/guides/access/iam-client.html) with confidential client type with the following permissions. Keep the `Client ID` and `Client Secret` for running the [demo.sh](demo.sh) script after this.
+
+   - ADMIN:NAMESPACE:{namespace}:CHAT:CONFIG - READ, UPDATE
+   
+5. Run the [demo.sh](demo.sh) script to run user chat simulation which calls this sample `gRPC server` using the `Client ID` and `Client Secret` created in the previous step. The script will setup the necessary configuration and then give you instructions on how to send and receive chat using `wscat` and if it contains the word `bad`, it should get filtered.
+
+   ```
+   export AB_BASE_URL='https://demo.accelbyte.io'
+   export AB_CLIENT_ID='xxxxxxxxxx'
+   export AB_CLIENT_SECRET='xxxxxxxxxx'
+   export AB_NAMESPACE='accelbyte'
+   export NGROK_URL='tcp://0.tcp.ap.ngrok.io:xxxxx'
+   bash demo.sh
+   ```
+ 
+> :warning: **Ngrok free plan has some limitations**: You may want to use paid plan if the traffic is high.
+
 ## Advanced
 
 ### Building Multi-Arch Docker Image
