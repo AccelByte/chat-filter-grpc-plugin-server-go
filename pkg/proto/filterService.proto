@@ -52,7 +52,6 @@ message MessageResult {
         PASS = 0;
         CENSORED = 1;
         BAN_CHAT_TOPIC = 2;
-        BAN_CHAT = 3;
     }
     enum Classification {
         OTHER = 0;
@@ -65,7 +64,9 @@ message MessageResult {
     int64 timestamp = 2;
     Action action = 3;
     repeated Classification classification = 4;
-    string message = 5;
+    repeated string cencoredWords = 5;
+    string message = 6;
+    string referenceId = 7;
 }
 
 message MessageBatchResult {
