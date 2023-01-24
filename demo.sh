@@ -7,14 +7,14 @@
 set -e
 set -o pipefail
 
-test -n "$NGROK_URL" || (echo "NGROK_URL is not set"; exit 1)
+test -n "$GRPC_SERVER_URL" || (echo "GRPC_SERVER_URL is not set"; exit 1)
 test -n "$AB_CLIENT_ID" || (echo "AB_CLIENT_ID is not set"; exit 1)
 test -n "$AB_CLIENT_SECRET" || (echo "AB_CLIENT_SECRET is not set"; exit 1)
 test -n "$AB_NAMESPACE" || (echo "AB_NAMESPACE is not set"; exit 1)
 
 DEMO_PREFIX='chatv2_grpc_demo'
 NUMBER_OF_PLAYERS=2                                 # This script supports 2 players only
-NGROK_URL="$(echo "$NGROK_URL" | sed 's@^.*/@@')"   # Remove leading tcp:// if any
+GRPC_SERVER_URL="$(echo "$GRPC_SERVER_URL" | sed 's@^.*/@@')"   # Remove leading tcp:// if any
 
 get_code_verifier() 
 {
@@ -50,9 +50,9 @@ echo Logging in client ...
 
 ACCESS_TOKEN="$(curl -s ${AB_BASE_URL}/iam/v3/oauth/token -H 'Content-Type: application/x-www-form-urlencoded' -u "$AB_CLIENT_ID:$AB_CLIENT_SECRET" -d "grant_type=client_credentials" | jq --raw-output .access_token)"
 
-echo Registering chat filter $NGROK_URL ...
+echo Registering chat filter $GRPC_SERVER_URL ...
 
-curl -X PUT -s "${AB_BASE_URL}/chat/v1/admin/config/namespaces/$AB_NAMESPACE" -H "Authorization: Bearer $ACCESS_TOKEN" -H 'Content-Type: application/json' -d "{\"filterParam\":\"${NGROK_URL}\",\"filterType\":\"GRPC\",\"enableProfanityFilter\":true}" >/dev/null
+curl -X PUT -s "${AB_BASE_URL}/chat/v1/admin/config/namespaces/$AB_NAMESPACE" -H "Authorization: Bearer $ACCESS_TOKEN" -H 'Content-Type: application/json' -d "{\"filterParam\":\"${GRPC_SERVER_URL}\",\"filterType\":\"GRPC\",\"enableProfanityFilter\":true}" >/dev/null
 
 echo "Press ENTER to run the user chat simulation"
 read
