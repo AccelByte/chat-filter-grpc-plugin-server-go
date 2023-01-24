@@ -26,6 +26,8 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
+	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 
 	pb "chat-filter-grpc-plugin-server-go/pkg/pb"
@@ -96,6 +98,9 @@ func main() {
 	// Enable gRPC Reflection
 	reflection.Register(s)
 	logrus.Infof("gRPC reflection enabled")
+
+	// Enable gRPC Health Check
+	grpc_health_v1.RegisterHealthServer(s, health.NewServer())
 
 	// Register Prometheus Metrics
 	prometheusRegistry := prometheus.NewRegistry()
