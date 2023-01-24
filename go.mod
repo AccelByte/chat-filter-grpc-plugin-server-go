@@ -3,12 +3,9 @@ module chat-filter-grpc-plugin-server-go
 go 1.18
 
 require (
-	github.com/AccelByte/accelbyte-go-sdk v0.31.0
-	github.com/AccelByte/bloom v0.0.0-20180915202807-98c052463922
-	github.com/AccelByte/go-jose v2.1.4+incompatible
+	github.com/AccelByte/accelbyte-go-sdk v0.36.0
 	github.com/TwiN/go-away v1.6.8
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
-	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.14.0
 	github.com/sirupsen/logrus v1.9.0
@@ -23,6 +20,8 @@ require (
 )
 
 require (
+	github.com/AccelByte/bloom v0.0.0-20180915202807-98c052463922 // indirect
+	github.com/AccelByte/go-jose v2.1.4+incompatible // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef // indirect
