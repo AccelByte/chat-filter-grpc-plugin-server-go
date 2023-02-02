@@ -102,16 +102,15 @@ func main() {
 	// Enable gRPC Health Check
 	grpc_health_v1.RegisterHealthServer(s, health.NewServer())
 
+	prometheusGrpc.Register(s)
+
 	// Register Prometheus Metrics
 	prometheusRegistry := prometheus.NewRegistry()
 	prometheusRegistry.MustRegister(
 		prometheusCollectors.NewGoCollector(),
 		prometheusCollectors.NewProcessCollector(prometheusCollectors.ProcessCollectorOpts{}),
+		prometheusGrpc.DefaultServerMetrics,
 	)
-
-	grpcMetrics := prometheusGrpc.NewServerMetrics()
-	grpcMetrics.InitializeMetrics(s)
-	prometheusGrpc.Register(s)
 
 	go func() {
 		middleware := server.NewMetricsMiddleware(prometheusRegistry, nil)
