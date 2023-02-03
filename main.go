@@ -113,12 +113,7 @@ func main() {
 	)
 
 	go func() {
-		middleware := server.NewMetricsMiddleware(prometheusRegistry, nil)
-		handlerFunc := middleware.WrapHandler(
-			metricsEndpoint,
-			promhttp.HandlerFor(prometheusRegistry, promhttp.HandlerOpts{}),
-		)
-		http.Handle(metricsEndpoint, handlerFunc)
+		http.Handle(metricsEndpoint, promhttp.HandlerFor(prometheusRegistry, promhttp.HandlerOpts{}))
 		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", metricsPort), nil))
 	}()
 	logrus.Infof("serving prometheus metrics at: (:%d%s)", metricsPort, metricsEndpoint)
