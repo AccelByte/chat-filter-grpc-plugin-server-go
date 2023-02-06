@@ -102,24 +102,18 @@ func main() {
 	// Enable gRPC Health Check
 	grpc_health_v1.RegisterHealthServer(s, health.NewServer())
 
+	prometheusGrpc.Register(s)
+
 	// Register Prometheus Metrics
 	prometheusRegistry := prometheus.NewRegistry()
 	prometheusRegistry.MustRegister(
 		prometheusCollectors.NewGoCollector(),
 		prometheusCollectors.NewProcessCollector(prometheusCollectors.ProcessCollectorOpts{}),
+		prometheusGrpc.DefaultServerMetrics,
 	)
 
-	grpcMetrics := prometheusGrpc.NewServerMetrics()
-	grpcMetrics.InitializeMetrics(s)
-	prometheusGrpc.Register(s)
-
 	go func() {
-		middleware := server.NewMetricsMiddleware(prometheusRegistry, nil)
-		handlerFunc := middleware.WrapHandler(
-			metricsEndpoint,
-			promhttp.HandlerFor(prometheusRegistry, promhttp.HandlerOpts{}),
-		)
-		http.Handle(metricsEndpoint, handlerFunc)
+		http.Handle(metricsEndpoint, promhttp.HandlerFor(prometheusRegistry, promhttp.HandlerOpts{}))
 		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", metricsPort), nil))
 	}()
 	logrus.Infof("serving prometheus metrics at: (:%d%s)", metricsPort, metricsEndpoint)
