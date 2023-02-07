@@ -1,5 +1,5 @@
 githubOwner = 'AccelByte'
-githubRepo = 'chat-filter-grpc-server-go'
+githubRepo = 'chat-filter-grpc-plugin-server-go'
 githubSsh = 'dhanarab-sdkbuild-ssh'
 
 githubUrl = "git@github.com:${githubOwner}/${githubRepo}.git"
